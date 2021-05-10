@@ -13,8 +13,8 @@ public interface DaoFactura {
     @Query("select * from factura")
     List<Factura> getAll();
 
-    @Query("SELECT SUM(monto) as Puntos FROM factura")
-    Factura cargarPuntos();
+    @Query("select COUNT(registro) from factura")
+    int numeroFacturas();
 
     @Insert
     Long insertFact(Factura fac);

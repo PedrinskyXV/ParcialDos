@@ -73,7 +73,7 @@ public class registroCompra extends AppCompatActivity {
                 if(!auxFactura.equals("") && !auxFecha.equals("Fe/c/ha") && !seleccion.equals("Seleccione") && !auxMonto.equals(""))
                 {
                     float puto = Float.parseFloat(auxMonto);
-                    int punto = (int)puto; //punto es la variable a enviar a la tabla punto xd ya va solo el int
+
                     AppDataBase base = Room.databaseBuilder(v.getContext(),
                             AppDataBase.class,"dbFactura")
                             .allowMainThreadQueries().build();
@@ -88,6 +88,9 @@ public class registroCompra extends AppCompatActivity {
                     fecha.setText("");
                     monto.setText("");
                     spinner.setSelection(0);
+
+
+
                     //comentar esta no mas para pruebas el mostrar
                     List<Factura> lista = base.daoFactura().getAll();
                     String aux = "";
@@ -100,8 +103,29 @@ public class registroCompra extends AppCompatActivity {
                     }
                     txv_resultados = findViewById(R.id.edtResultados);
                     txv_resultados.setText(aux);
+
+                    int numFac = base.daoFactura().numeroFacturas();
+                    int punto = (int)puto;
+
+                    if(numFac == 1){
+
+                        Punto p = new Punto(punto);
+                        Long pu = base.daoPunto().insertPu(p);
+                    }
+                    else{
+                        base.daoPunto().sumarPuntos(punto);
+                    }
+
+                    String aux2 = "";
+                    List<Punto> lista2 = base.daoPunto().getAll();
+
+                    for (int i = 0; i < lista2.size(); i++)
+                    {
+                        aux2 += "id: " + lista2.get(i).idPunto + " monto: " + lista2.get(i).punto +"\n";
+                    }
+
                     //aqui hacer el count a punto mira dao o intenta helpers como te sea mas facil dependemos del idPunto=1
-                    Log.i("alv","intero: "+punto+" , float: "+puto);
+                    Log.i("alv","intero: "+punto+" , float: "+puto + ", NFac " + numFac + ", punto: " + aux2);
                     /*Intent act = new Intent(getApplicationContext(),MainActivity.class);
                     startActivity(act);*/
                 }
